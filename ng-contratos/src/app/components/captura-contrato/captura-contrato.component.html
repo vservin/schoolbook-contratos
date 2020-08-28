@@ -1,0 +1,79 @@
+<main class="row">
+  <section class="col-md-5 col-lg-6 d-none d-md-flex" id="image-section"></section>
+  <section class="col-md-7 col-lg-6" id="form-section">
+    <h2>Capturar contrato</h2>
+    <hr>
+    <mat-vertical-stepper [linear]="false">
+      <mat-step [stepControl]="escuela" errorMessage="La escuela no es válido">
+        <h1>Datos de la escuela</h1>
+        <form [formGroup]="escuela">
+          <ng-template matStepLabel>Ingresa los datos de la escuela</ng-template>
+          <div class="row">
+            <mat-form-field class="col-sm-5">
+              <mat-label>Clave escolar</mat-label>
+              <input matInput formControlName="clave">
+              <mat-error *ngIf="escuela.controls['clave'].hasError('required')">La clave es requerida</mat-error>
+              <mat-error *ngIf="escuela.controls['clave'].hasError('maxlength')">La clave puede tener máximo 10 caracteres</mat-error>
+            </mat-form-field>
+            <mat-form-field class="col-sm-7">
+              <mat-label>Nombre de la escuela</mat-label>
+              <input matInput formControlName="nombre">
+              <mat-error *ngIf="escuela.controls['nombre'].hasError('required')">El nombre es requerida</mat-error>
+              <mat-error *ngIf="escuela.controls['nombre'].hasError('maxlength')">El nombre puede tener máximo 100 caracteres</mat-error>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step [stepControl]="contrato" errorMessage="El contrato no es válido">
+        <form [formGroup]="contrato">
+          <ng-template matStepLabel>Ingresa los datos del contrato</ng-template>
+          <div class="row justify-content-between">
+            <mat-form-field class="col-lg-7" *ngIf="contrato.controls['renovacion'].value">
+              <mat-label>Número de contrato anterior</mat-label>
+              <input matInput formControlName="contratoAnterior">
+              <mat-icon matSuffix [inline]="true">search</mat-icon>
+            </mat-form-field>
+            <div class="col-lg-5 mat-toggle-container d-flex justify-content-end" [ngClass]="{ 'offset-lg-7': !contrato.controls['renovacion'].value }">
+              <mat-slide-toggle color="primary" formControlName="renovacion">Renovación</mat-slide-toggle>
+            </div>
+            <mat-form-field class="col-12 mb-3">
+              <mat-label>Escuela asociada</mat-label>
+              <input matInput formControlName="escuelaAsociada">
+              <mat-hint>Seleccionada anteriormente</mat-hint>
+            </mat-form-field>
+            <mat-form-field class="col-xl-6 col-lg-8">
+              <mat-label>Inicio y fin del contrato</mat-label>
+              <mat-date-range-input [rangePicker]="picker">
+                <input matStartDate formControlName="fechaInicio" placeholder="DD/MM/YYYY">
+                <input matEndDate formControlName="fechaFin" placeholder="DD/MM/YYYY">
+              </mat-date-range-input>
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-date-range-picker #picker disabled="false"></mat-date-range-picker>
+              <mat-error *ngIf="contrato.controls['fechaInicio'].hasError('matStartDateInvalid')">Fecha de inicio inválida</mat-error>
+              <mat-error *ngIf="contrato.controls['fechaFin'].hasError('matEndDateInvalid')">Fecha de fin inválida</mat-error>
+            </mat-form-field>
+            <div class="col-lg-2 offset-lg-1 d-flex justify-content-center">
+              <button mat-mini-fab color="primary" (click)="fileInput.click()" matTooltip="Añadir Documento PDF con firmas" matTooltipPosition="above">
+                <mat-icon>note_add</mat-icon>
+                <input #fileInput type="file" formControlName="documento" class="d-none">
+              </button>
+            </div>
+            <mat-form-field class="col-12 mb-3">
+              <mat-label>Responsable</mat-label>
+              <input matInput formControlName="responsable">
+              <mat-error *ngIf="escuela.controls['clave'].hasError('required')">El nombre del responsable es requerido</mat-error>
+            </mat-form-field>
+          </div>
+        </form>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Terminar</ng-template>
+        <p class="text-success" *ngIf="escuela.valid && contrato.valid">¡Terminaste!</p>
+        <p class="text-danger" *ngIf="!(escuela.valid && contrato.valid)">Parece ser que algo no está bien, regresa a ingresar datos válidos.</p>
+        <div class="d-flex justify-content-center">
+          <button mat-raised-button color="primary" (click)="submit()" [disabled]="escuela.invalid || contrato.invalid">Crear contrato</button>
+        </div>
+      </mat-step>
+    </mat-vertical-stepper>
+  </section>
+</main>
